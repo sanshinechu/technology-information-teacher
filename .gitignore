@@ -1,0 +1,16 @@
+# 系統檔案
+.DS_Store
+Thumbs.db
+
+# 環境變數與敏感資料
+.env
+*.key
+*.pem
+
+# Node.js
+node_modules/
+
+# Python
+__pycache__/
+*.pyc
+.venv/

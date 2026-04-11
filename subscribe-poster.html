@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>訂閱海報</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: #FF0000;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      font-family: 'Microsoft JhengHei', 'Noto Sans TC', sans-serif;
+    }
+
+    .poster {
+      width: 960px;
+      height: 540px;
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+      border-radius: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 48px 64px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .poster::before {
+      content: '';
+      position: absolute;
+      top: -80px;
+      right: -80px;
+      width: 300px;
+      height: 300px;
+      background: rgba(255, 0, 0, 0.15);
+      border-radius: 50%;
+    }
+
+    .poster::after {
+      content: '';
+      position: absolute;
+      bottom: -60px;
+      left: 200px;
+      width: 200px;
+      height: 200px;
+      background: rgba(255, 0, 0, 0.1);
+      border-radius: 50%;
+    }
+
+    .left {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 20px;
+      z-index: 1;
+    }
+
+    .youtube-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: #FF0000;
+      color: white;
+      padding: 8px 20px;
+      border-radius: 30px;
+      font-size: 18px;
+      font-weight: 700;
+      width: fit-content;
+    }
+
+    .youtube-badge svg {
+      width: 28px;
+      height: 28px;
+    }
+
+    .channel-name {
+      font-size: 42px;
+      font-weight: 900;
+      color: #ffffff;
+      line-height: 1.2;
+    }
+
+    .channel-handle {
+      font-size: 20px;
+      color: rgba(255,255,255,0.6);
+      font-weight: 400;
+    }
+
+    .cta {
+      font-size: 22px;
+      color: #FFD700;
+      font-weight: 700;
+      margin-top: 8px;
+    }
+
+    .steps {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 4px;
+    }
+
+    .step {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: rgba(255,255,255,0.85);
+      font-size: 17px;
+    }
+
+    .step-num {
+      width: 28px;
+      height: 28px;
+      background: #FF0000;
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 14px;
+      flex-shrink: 0;
+    }
+
+    .right {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+      z-index: 1;
+    }
+
+    .qr-wrapper {
+      background: white;
+      padding: 16px;
+      border-radius: 16px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+    }
+
+    #qrcode canvas, #qrcode img {
+      display: block;
+    }
+
+    .scan-text {
+      color: rgba(255,255,255,0.8);
+      font-size: 15px;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="poster">
+    <div class="left">
+      <div class="youtube-badge">
+        <svg viewBox="0 0 24 24" fill="white">
+          <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+        </svg>
+        YouTube 教學頻道
+      </div>
+
+      <div>
+        <div class="channel-name">三生有幸 ☀️</div>
+        <div class="channel-handle">@SanShineChu</div>
+      </div>
+
+      <div class="cta">📱 掃描 QR Code 立即訂閱！</div>
+
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <span>打開手機相機或掃碼 App</span>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <span>對準右側 QR Code 掃描</span>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <span>點擊「訂閱」按鈕，完成！</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="right">
+      <div class="qr-wrapper">
+        <div id="qrcode"></div>
+      </div>
+      <div class="scan-text">掃我訂閱 👆</div>
+    </div>
+  </div>
+
+  <script>
+    new QRCode(document.getElementById("qrcode"), {
+      text: "https://www.youtube.com/@SanShineChu?sub_confirmation=1",
+      width: 180,
+      height: 180,
+      colorDark: "#000000",
+      colorLight: "#ffffff",
+      correctLevel: QRCode.CorrectLevel.H
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(mkdir -p \"c:\\\\Users\\\\user\\\\Desktop\\\\code test\\\\童書插畫\")",
+      "Bash(chmod +x generate_images.sh)",
+      "Bash(bash generate_images.sh)",
+      "Bash(python create_ppt.py)"
+    ]
+  },
+  "model": "haiku"
+}
