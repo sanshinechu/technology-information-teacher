@@ -17,3 +17,10 @@ node_modules/
 __pycache__/
 *.pyc
 .venv/
+
+# 含學生個資的 Excel/試算表檔案（身分證字號、姓名等敏感資料）
+學習扶助/**/*.xlsx
+學習扶助/**/*.xls
+學習扶助/**/*.jpg
+學習扶助/**/*.png
+學習扶助/**/sop_utf8.txt
