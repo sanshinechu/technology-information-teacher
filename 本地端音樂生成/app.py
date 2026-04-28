@@ -36,8 +36,8 @@ def generate_music(description, duration, num_samples):
         if num_samples < 1 or num_samples > 5:
             return None, "❌ 生成次數必須在 1-5 之間"
 
-        if len(description.strip()) < 3:
-            return None, "❌ 音樂描述至少需要 3 個字"
+        if len(description.strip()) < 1:
+            return None, "❌ 請輸入音樂描述"
 
         # 載入模型
         processor, model, device = load_model()
