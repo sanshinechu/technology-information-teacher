@@ -1,4 +1,5 @@
 @echo off
+setlocal
 chcp 65001 >nul
 
 REM 改變到批次檔所在目錄
@@ -11,6 +12,7 @@ if not exist "music_gen_env\Scripts\python.exe" (
     echo 請先執行 install.bat 進行安裝
     echo.
     pause
+    endlocal
     exit /b 1
 )
 
@@ -20,6 +22,7 @@ if not exist "app.py" (
     echo ❌ app.py 不存在！
     echo.
     pause
+    endlocal
     exit /b 1
 )
 
@@ -36,3 +39,4 @@ REM 直接使用虛擬環境的 Python 執行應用
 music_gen_env\Scripts\python.exe app.py
 
 pause
+endlocal
