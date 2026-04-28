@@ -1,33 +1,29 @@
 import gradio as gr
 import torch
 import torchaudio
-from transformers import pipeline
+from transformers import AutoProcessor, MusicgenForConditionalGeneration
 from datetime import datetime
-import numpy as np
 
 # 全域變數，只載入一次模型
+processor = None
 model = None
 
 def load_model():
-    global model
+    global processor, model
     if model is None:
         print("載入 MusicGen 模型... (首次使用會下載，約 2-3 GB)")
         try:
-            # 使用 transformers 的 MusicGen 管道
-            model = pipeline(
-                "text-to-audio",
-                model="facebook/musicgen-medium",
-                device="cuda" if torch.cuda.is_available() else "cpu"
-            )
+            device = "cuda" if torch.cuda.is_available() else "cpu"
+            print(f"使用設備: {device}")
+
+            processor = AutoProcessor.from_pretrained("facebook/musicgen-medium")
+            model = MusicgenForConditionalGeneration.from_pretrained("facebook/musicgen-medium")
+            model = model.to(device)
+
         except Exception as e:
             print(f"模型載入失敗：{e}")
-            print("嘗試使用 CPU...")
-            model = pipeline(
-                "text-to-audio",
-                model="facebook/musicgen-medium",
-                device="cpu"
-            )
-    return model
+            raise
+    return processor, model
 
 def generate_music(description, duration, num_samples):
     """生成音樂的主函數"""
@@ -46,30 +42,45 @@ def generate_music(description, duration, num_samples):
             return None, "❌ 音樂描述至少需要 5 個字"
 
         # 載入模型
-        model = load_model()
+        processor, model = load_model()
+        device = next(model.parameters()).device
 
         # 生成音樂
         print(f"正在生成音樂: '{description}'，長度: {duration} 秒...")
 
-        # 使用 transformers 的管道生成音樂
-        outputs = model(
-            description,
-            forward_params={
-                "duration": duration,
-            }
+        # 準備輸入
+        inputs = processor(
+            text=[description] * num_samples,
+            padding=True,
+            return_tensors="pt"
         )
+        inputs = {k: v.to(device) for k, v in inputs.items()}
 
-        # 獲取生成的音樂數據
-        music_data = outputs["audio"]
-        sampling_rate = outputs["sampling_rate"]
+        # 計算要生成的樣本數
+        max_length = int(30 * model.config.audio_encoder.frame_rate)
+        length = int(duration * model.config.audio_encoder.frame_rate)
+
+        # 生成音樂
+        with torch.no_grad():
+            audio_values = model.generate(
+                **inputs,
+                max_length=length,
+                do_sample=True,
+                top_k=250,
+                top_p=0.0,
+                temperature=1.0,
+            )
 
         # 保存第一個樣本
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         output_path = f"generated_music_{timestamp}.wav"
 
-        # 將音樂保存為 WAV 檔案
-        audio_tensor = torch.tensor(music_data).unsqueeze(0)  # 添加批次維度
-        torchaudio.save(output_path, audio_tensor, sampling_rate)
+        # 取第一個樣本
+        audio = audio_values[0].cpu()
+
+        # 保存 WAV 檔案
+        sample_rate = model.config.audio_encoder.sampling_rate
+        torchaudio.save(output_path, audio.unsqueeze(0), sample_rate)
 
         # 準備結果訊息
         result_msg = f"✅ 生成完成！\n"
@@ -83,7 +94,7 @@ def generate_music(description, duration, num_samples):
     except Exception as e:
         import traceback
         print(traceback.format_exc())
-        return None, f"❌ 發生錯誤：{str(e)}"
+        return None, f"❌ 發生錯誤：{str(e)}\n\n提示：請確保有足夠的 GPU 記憶體"
 
 # 建立 Gradio 界面
 with gr.Blocks(title="🎵 本地音樂生成器") as demo:
