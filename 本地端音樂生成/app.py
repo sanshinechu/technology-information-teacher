@@ -55,9 +55,7 @@ def generate_music(description, duration, num_samples):
         outputs = model(
             description,
             forward_params={
-                "max_duration": duration,
-                "do_sample": True,
-                "top_k": 250,
+                "duration": duration,
             }
         )
 
