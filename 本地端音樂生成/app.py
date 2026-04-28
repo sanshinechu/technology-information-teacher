@@ -44,7 +44,17 @@ def generate_music(description, duration, num_samples):
         if isinstance(audio, list):
             audio = audio[0]
 
-        torchaudio.save(path, torch.tensor(audio).unsqueeze(0), rate)
+        # 確保是 torch tensor
+        if not isinstance(audio, torch.Tensor):
+            audio = torch.from_numpy(audio).float()
+        else:
+            audio = audio.float()
+
+        # 確保形狀正確 (1, samples)
+        if audio.dim() == 1:
+            audio = audio.unsqueeze(0)
+
+        torchaudio.save(path, audio, rate)
 
         return path, f"✅ 完成!\n{description}"
 
