@@ -28,8 +28,9 @@ share/python-wheels/
 *.egg
 MANIFEST
 
-# 生成的音樂檔案
+# 生成的音樂檔案和 output 資料夾
 generated_music_*.wav
+output/
 
 # IDE
 .vscode/
