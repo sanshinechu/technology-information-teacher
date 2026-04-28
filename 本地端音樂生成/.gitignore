@@ -1,0 +1,45 @@
+# 虛擬環境
+music_gen_env/
+venv/
+env/
+
+# Python 套件快取
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# 生成的音樂檔案
+generated_music_*.wav
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# 作業系統
+.DS_Store
+Thumbs.db
+
+# HuggingFace 模型快取（本地大檔案）
+.cache/
