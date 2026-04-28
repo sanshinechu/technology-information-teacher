@@ -56,19 +56,15 @@ def generate_music(description, duration, num_samples):
         )
         inputs = {k: v.to(device) for k, v in inputs.items()}
 
-        # 計算要生成的樣本數
-        max_length = int(30 * model.config.audio_encoder.frame_rate)
-        length = int(duration * model.config.audio_encoder.frame_rate)
+        # 計算要生成的長度
+        # MusicGen 預設採樣率為 32 kHz
+        length = int(duration * 32000 / 512)  # 512 是解碼器的跳數
 
-        # 生成音樂
+        # 生成音樂（使用最小參數集）
         with torch.no_grad():
             audio_values = model.generate(
                 **inputs,
                 max_length=length,
-                do_sample=True,
-                top_k=250,
-                top_p=0.0,
-                temperature=1.0,
             )
 
         # 保存第一個樣本
