@@ -9,7 +9,11 @@ echo ========================================
 echo.
 
 REM 進入專案目錄
-cd /d "%~dp0"
+set "PROJECT_DIR=%~dp0"
+set "PROJECT_DIR=!PROJECT_DIR:~0,-1!"
+cd /d "!PROJECT_DIR!"
+echo 安裝目錄：!PROJECT_DIR!
+echo.
 
 REM 檢查虛擬環境是否存在
 if not exist "music_gen_env" (
